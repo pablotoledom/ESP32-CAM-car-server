@@ -1,0 +1,928 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <META HTTP-EQUIV="Expires" CONTENT="-1">
+    <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
+    <META HTTP-EQUIV="Cache-Control" CONTENT="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <style>
+      /* General styles */
+      body {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      .hidden {
+        display: none;
+      }
+    
+      /* Action buttons styles */
+      .actions, .configuration {
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      .configuration__item {
+        margin-bottom: 10px;
+      }
+
+      .configuration__tag {
+        position: absolute;
+        width: 100px;
+      }
+
+      .configuration input {
+        margin-left: 100px;
+      }
+
+      .actions button {
+        margin: 0 5px;
+      }
+
+      .config__button {
+        margin-right: 10px;
+      }
+    
+      /* WIFI Configuration Manager styles */
+      .wifiscanlist {
+        border: 1px solid #000;
+        margin-bottom: 15px;
+        width: fit-content;
+      }
+
+      table, th, td {
+        border: 1px solid #000;
+        border-collapse: collapse;
+        color: #565656;
+      }
+
+      th, td {
+        padding: 2px 5px;
+      }
+
+      .wifiselect {
+        color: #565656;
+        cursor: pointer;
+      }
+
+      .wifiselect:hover {
+        color: #0a1aec;
+      }
+
+      .wifi__signal {
+        width: 100px;
+        height: 10px;
+        border: 1px solid #000;
+      }
+
+      .wifi__signal-inside {
+        height: 10px;
+        width: 0%;
+        background-color: #1b019b;
+      }
+      
+      .wifi__signal-inside--20 {
+        width: 20%;
+      }
+
+      .wifi__signal-inside--40 {
+        width: 40%;
+      }
+      
+      .wifi__signal-inside--60 {
+        width: 60%;
+      }
+
+      .wifi__signal-inside--80 {
+        width: 80%;
+      }
+
+      .wifi__signal-inside--100 {
+        width: 100%;
+      }
+
+      .loading-wifi-list {
+        margin: 20px;
+      }
+
+      /* Pad control car styles */
+      .pad {
+        width: 265px;
+        position: absolute;
+        padding-top: 30px;
+        left: 0;
+      }
+
+      .cam {
+        background-color: gray;
+        width: 300px;
+        height: 222px;
+        position: absolute;
+        margin-top: 10px;
+        left: 270px;
+      }
+
+      .camerastream {
+        width:300px;
+      }
+
+      .named-button-pad {
+        text-align: center;
+      }
+
+      .named-button-pad button{
+        width: 78px;
+        height: 50px;
+        margin: 2px;
+        font-size: 10px;
+        text-align: center;
+        line-height: 40px;
+      }
+
+      .named-button-pad__forward {
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+      }
+      .named-button-pad__left {
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+      }
+      .named-button-pad__right {
+        border-top-right-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+      .named-button-pad__backward {
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+      }
+
+      .arrow-button-pad {
+        display: none;
+      }
+
+      /* HTML 5 Joystick control car styles */
+      .joystick-pad {
+        margin: 0 0 0 48px;
+      }
+
+      #main {
+        align-items: center;
+        display: flex;
+        height: 100vh;
+        justify-content: center;
+        margin: auto;
+        width: 100vw;
+      }
+
+      .joystick__container {
+        width: 100px;
+        height: 100px;
+        padding: 35px;
+        border-radius: 100%;
+        border: 1px solid black;
+      }
+
+      #wrapper {
+        width: 100px;
+        height: 100px;
+        border-radius: 100%;
+        border: 1px solid black;
+      }
+
+      .joystick {
+        background-color: #d8d8d8;
+        border-radius: 100%;
+        cursor: pointer;
+        cursor: hand;
+        height: 90%;
+        user-select: none;
+        width: 90%;
+        margin: 5%;
+      }
+    </style>
+    <script language="JavaScript">
+      // Polyfills
+      //Async Calls 
+      if (typeof XMLHttpRequest == "undefined") 
+        XMLHttpRequest = function () 
+          { try { return new ActiveXObject("Msxml2.XMLHTTP.6.0"); } 
+            catch (e) {} 
+          try { return new ActiveXObject("Msxml2.XMLHTTP.3.0"); } 
+            catch (e) {} 
+          try { return new ActiveXObject("Microsoft.XMLHTTP"); } 
+            catch (e) {} 
+          //Microsoft.XMLHTTP points to Msxml2.XMLHTTP and is redundant 
+          throw new Error("This browser does not support XMLHttpRequest."); 
+      };
+
+      // Base64 Polyfill
+      (function(f) {
+        'use strict';
+        /* istanbul ignore else */
+        if (typeof exports === 'object' && exports != null &&
+            typeof exports.nodeType !== 'number') {
+          module.exports = f ();
+        } else if (typeof define === 'function' && define.amd != null) {
+          define ([], f);
+        } else {
+          var base64 = f ();
+          var global = typeof self !== 'undefined' ? self : $.global;
+          if (typeof global.btoa !== 'function') global.btoa = base64.btoa;
+          if (typeof global.atob !== 'function') global.atob = base64.atob;
+        }
+
+        } (function() {
+        'use strict';
+        var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+
+        function InvalidCharacterError(message) {
+          this.message = message;
+        }
+        InvalidCharacterError.prototype = new Error ();
+        InvalidCharacterError.prototype.name = 'InvalidCharacterError';
+
+        // Base64 encode and decode Polyfill
+        // encoder
+        // [https://gist.github.com/999166] by [https://github.com/nignag]
+        function btoa(input) {
+          var str = String (input);
+          for (
+            // initialize result and counter
+            var block, charCode, idx = 0, map = chars, output = '';
+            // if the next str index does not exist:
+            //   change the mapping table to "="
+            //   check if d has no fractional digits
+            str.charAt (idx | 0) || (map = '=', idx % 1);
+            // "8 - idx % 1 * 8" generates the sequence 2, 4, 6, 8
+            output += map.charAt (63 & block >> 8 - idx % 1 * 8)
+          ) {
+            charCode = str.charCodeAt (idx += 3 / 4);
+            if (charCode > 0xFF) {
+              throw new InvalidCharacterError ("'btoa' failed: The string to be encoded contains characters outside of the Latin1 range.");
+            }
+            block = block << 8 | charCode;
+          }
+          return output;
+        }
+
+        // decoder
+        // [https://gist.github.com/1020396] by [https://github.com/atk]
+        function atob(input) {
+          var str = (String (input)).replace (/[=]+$/, ''); // #31: ExtendScript bad parse of /=
+          if (str.length % 4 === 1) {
+            throw new InvalidCharacterError ("'atob' failed: The string to be decoded is not correctly encoded.");
+          }
+          for (
+            // initialize result and counters
+            var bc = 0, bs, buffer, idx = 0, output = '';
+            // get next character
+            buffer = str.charAt (idx++); // eslint-disable-line no-cond-assign
+            // character found in table? initialize bit storage and add its ascii value;
+            ~buffer && (bs = bc % 4 ? bs * 64 + buffer : buffer,
+              // and if not first of each 4 characters,
+              // convert the first 8 bits to one ascii character
+              bc++ % 4) ? output += String.fromCharCode (255 & bs >> (-2 * bc & 6)) : 0
+          ) {
+            // try to find character in table (0-63, not found => -1)
+            buffer = chars.indexOf (buffer);
+          }
+          return output;
+        }
+        return {btoa: btoa, atob: atob};
+      }));
+
+      // trim Polyfill
+      ''.trim || (String.prototype.trim = // Use the native method if available, otherwise define a polyfill:
+      function () { // trim returns a new string (which replace supports)
+        return this.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g,'') // trim the left and right sides of the string
+      })
+
+      // forEach Polyfill
+      if (!Array.prototype.forEach) {
+        Array.prototype.forEach = function (callback, thisArg) {
+          thisArg = thisArg || window;
+          for (var i = 0; i < this.length; i++) {
+            callback.call(thisArg, this[i], i, this);
+          }
+        };
+      }
+
+      // NodeList Polyfill
+      if(window.NodeList && !NodeList.prototype.forEach) {
+        NodeList.prototype.forEach = Array.prototype.forEach;
+      }
+      if(window.HTMLCollection && !HTMLCollection.prototype.forEach) {
+        HTMLCollection.prototype.forEach = Array.prototype.forEach;
+      }
+
+      /*! @source http://purl.eligrey.com/github/classList.js/blob/master/classList.js */
+      "document"in self&&("classList"in document.createElement("_")&&(!document.createElementNS||"classList"in document.createElementNS("http://www.w3.org/2000/svg","g"))||!function(t){"use strict";if("Element"in t){var e="classList",n="prototype",i=t.Element[n],s=Object,r=String[n].trim||function(){return this.replace(/^\s+|\s+$/g,"")},o=Array[n].indexOf||function(t){for(var e=0,n=this.length;n>e;e++)if(e in this&&this[e]===t)return e;return-1},c=function(t,e){this.name=t,this.code=DOMException[t],this.message=e},a=function(t,e){if(""===e)throw new c("SYNTAX_ERR","The token must not be empty.");if(/\s/.test(e))throw new c("INVALID_CHARACTER_ERR","The token must not contain space characters.");return o.call(t,e)},l=function(t){for(var e=r.call(t.getAttribute("class")||""),n=e?e.split(/\s+/):[],i=0,s=n.length;s>i;i++)this.push(n[i]);this._updateClassName=function(){t.setAttribute("class",this.toString())}},u=l[n]=[],h=function(){return new l(this)};if(c[n]=Error[n],u.item=function(t){return this[t]||null},u.contains=function(t){return~a(this,t+"")},u.add=function(){var t,e=arguments,n=0,i=e.length,s=!1;do t=e[n]+"",~a(this,t)||(this.push(t),s=!0);while(++n<i);s&&this._updateClassName()},u.remove=function(){var t,e,n=arguments,i=0,s=n.length,r=!1;do for(t=n[i]+"",e=a(this,t);~e;)this.splice(e,1),r=!0,e=a(this,t);while(++i<s);r&&this._updateClassName()},u.toggle=function(t,e){var n=this.contains(t),i=n?e!==!0&&"remove":e!==!1&&"add";return i&&this[i](t),e===!0||e===!1?e:!n},u.replace=function(t,e){var n=a(t+"");~n&&(this.splice(n,1,e),this._updateClassName())},u.toString=function(){return this.join(" ")},s.defineProperty){var f={get:h,enumerable:!0,configurable:!0};try{s.defineProperty(i,e,f)}catch(p){void 0!==p.number&&-2146823252!==p.number||(f.enumerable=!1,s.defineProperty(i,e,f))}}else s[n].__defineGetter__&&i.__defineGetter__(e,h)}}(self),function(){"use strict";var t=document.createElement("_");if(t.classList.add("c1","c2"),!t.classList.contains("c2")){var e=function(t){var e=DOMTokenList.prototype[t];DOMTokenList.prototype[t]=function(t){var n,i=arguments.length;for(n=0;i>n;n++)t=arguments[n],e.call(this,t)}};e("add"),e("remove")}if(t.classList.toggle("c3",!1),t.classList.contains("c3")){var n=DOMTokenList.prototype.toggle;DOMTokenList.prototype.toggle=function(t,e){return 1 in arguments&&!this.contains(t)==!e?e:n.call(this,t)}}"replace"in document.createElement("_").classList||(DOMTokenList.prototype.replace=function(t,e){var n=this.toString().split(" "),i=n.indexOf(t+"");~i&&(n=n.slice(i),this.remove.apply(this,n),this.add(e),this.add.apply(this,n.slice(1)))}),t=null}());
+
+      //# Math function Polyfill sourceMappingURL=es6-math.min.map
+      !function(n){"function"==typeof define&&define.amd?define([],n):n()}(function(){"use strict";var n=Math,r=Number,t,e=Object.defineProperty,o={sinh:function c(r){if(0===r)return r;var t=n.exp(r);return t/2-.5/t},cosh:function a(r){var t=n.exp(r);return t/2+.5/t},tanh:function p(r){if(0===r)return r;if(0>r){var t=n.exp(2*r);return(t-1)/(t+1)}var t=n.exp(-2*r);return(1-t)/(1+t)},asinh:function l(r){return r===-1/0?-1/0:n.log(r+n.sqrt(r*r+1))},acosh:function s(r){return r>=1?n.log(r+n.sqrt(r*r-1)):0/0},atanh:function g(r){return r>=-1&&1>=r?n.log((1+r)/(1-r))/2:0/0},expm1:function y(r){return 0===r?r:n.exp(r)-1},log10:function N(r){return n.log(r)/n.LN10},log2:function h(r){return n.log(r)/n.LN2},log1p:function m(r){return 0===r?r:n.log(1+r)},sign:function v(n){return isNaN(n)?0/0:0>n?-1:n>0?1:+n},cbrt:function I(r){return 0===r?r:0>r?-n.pow(-r,1/3):n.pow(r,1/3)},hypot:function b(r,t){for(var e=0,o=0,u=arguments;e<u.length;e++)o+=u[e]*u[e];return n.sqrt(o)},trunc:function E(r){return 0===r?r:0>r?n.ceil(r):n.floor(r)},fround:"function"==typeof Float32Array?function(n){return function r(t){return n[0]=t,n[0]}}(new Float32Array(1)):function F(n){return n},clz32:function d(n){if(n===-1/0)return 32;if(0>n||(n|=0)<0)return 0;if(!n)return 32;for(var r=31;n>>=1;)r--;return r},imul:function x(n,r){return(0|n)*(0|r)|0}},u={isNaN:function A(n){return"number"==typeof n&&n!==n},isFinite:function S(n){return"number"==typeof n&&n===n&&1/0!==n&&n!==-1/0},isInteger:function _(r){return"number"==typeof r&&1/0!==r&&r!==-1/0&&n.floor(r)===r},isSafeInteger:function q(r){return"number"==typeof r&&r>-9007199254740992&&9007199254740992>r&&n.floor(r)===r},parseFloat:parseFloat,parseInt:parseInt},f={EPSILON:2.220446049250313e-16,MAX_SAFE_INTEGER:9007199254740991,MIN_SAFE_INTEGER:-9007199254740991};for(t in o)"function"!=typeof n[t]&&(n[t]=o[t]);for(t in u)"function"!=typeof r[t]&&(r[t]=u[t]);try{t={},e(t,0,{});for(t in f)t in r||e(r,t,{value:f[t]})}catch(i){for(t in f)t in r||(r[t]=f[t])}});
+    </script>
+    <script>
+      //----------------------------------------------------------------------//
+      // --------------------- Remote WIFI Car Website ---------------------- //
+      //----------------------------------------------------------------------//
+
+      // ------------------------ Configuration site ------------------------ //
+      // Declare AJAX object
+      var xhttp = new XMLHttpRequest();
+      var lastKeyPressed = '';
+      var isConfiguring = false;
+      xhttp.open('GET', document.location, false);
+      xhttp.send(null);
+      var headers = xhttp.getAllResponseHeaders();
+
+      // Separate lines headers
+      var arr = headers.trim().split(/[\r\n]+/);
+
+      // Create a map of header names to values
+      var headerMap = {};
+
+      // Push headers in array
+      for (var i = 0; i < arr.length; i++) {
+        var parts = arr[i].split(': ');
+        var header = parts[0].toLowerCase();
+        var value = parts[1]
+        headerMap[header] = value;
+      }
+
+      // -------------------- If do you need run local test -------------------- //
+      // Mock headers for local testing
+      // var headerMap = {
+      //   server: '192.168.4.1',
+      //   usercontrol: 'joystick',
+      //   wifipass: 'bXl3aWZpcGFzcw==',
+      //   wifissid: 'bXl3aWZpbmV0d29yaw=='
+      // }
+
+      // ----------------------- Drive car with keyboard ----------------------- //
+      // Keypress Events
+      var forwardKey = false;
+      if (document.addEventListener) {
+        document.addEventListener("keydown",keydown,false);
+        document.addEventListener("keyup",keyup,false);
+      } else if (document.attachEvent) {
+        document.attachEvent("onkeydown", keydown);
+        document.attachEvent("onkeyup", keyup);
+      } else {
+        document.onkeydown= keydown;
+        document.onkeyup= keyup;
+      }
+
+      // keydown event
+      function keydown(e) {
+        var event = window.event ? window.event : e;
+        
+        // Detect number of key pressed and process command
+        if (lastKeyPressed != event.keyCode) {
+          if (!isConfiguring) {
+            switch (event.keyCode) {
+              case 81:
+                controlCar('lighton');
+                break;
+              case 87:
+                controlCar('lightoff');
+                break;
+              case 32:
+                controlCar('claxonon');
+                break;
+              case 37:
+                  controlCar('turnleft');
+                break;
+              case 39:
+                  controlCar('turnright');
+                break;
+              case 38:
+                  controlCar('forward');
+                  forwardKey = true;
+                break;
+              case 40:
+                  controlCar('backward');
+                break;
+            }
+          }
+        }
+
+        lastKeyPressed = event.keyCode;
+      }
+
+      // Release key event
+      function keyup(e) {
+        // Validate flag to disable car movements when user edits configuration
+        if (!isConfiguring) {
+          var event = window.event ? window.event : e;
+          // Detect number of key released and process command
+          // Left
+          if (event.keyCode == 37) {
+            if (forwardKey) {
+              controlCar('forward');
+            } else {
+              controlCar('stop');
+            }
+          }
+          // Up
+          if (event.keyCode == 38) {
+            controlCar('stop');
+            forwardKey = false;
+          }
+          // Right
+          if (event.keyCode == 39) {
+            if (forwardKey) {
+              controlCar('forward');
+            } else {
+              controlCar('stop');
+            }
+          }
+          // Down
+          if (event.keyCode == 40) {
+            controlCar('stop');
+          }
+  
+          if (event.keyCode == 32) {
+            controlCar('claxonoff');
+          }
+  
+          lastKeyPressed = '';
+        }
+      }
+
+      // ----------------------- Configuration methods ----------------------- //
+      // Show configuration panel and hidde car control an camera
+      function showConfigOptions () {
+        // Enable and disable user sections
+        document.getElementById('content').style.display = 'none';
+        document.getElementById('configuration').style.display = 'block';
+        // Set flag for disable car movements when user edit configuration
+        isConfiguring = true;
+      }
+
+      // Put the ssid value and set the password as blank
+      function addWifiForm(ssid) {
+        document.getElementById('ssid').value = ssid;
+        document.getElementById('pass').value = '';
+      }
+
+      // Getting a csv (comma separated values) WIFI scan list
+      function wifiScan() {
+        // Hidde actyaly WIFI list and show Loading text
+        document.getElementById('wifiscanlist').style.display = 'none';
+        document.getElementById('loading-wifi-list').style.display = 'block';
+      
+        // Timeout for wait hidde and show sections
+        setTimeout(function() {
+          // Call to WIFI list endpoint
+          var xhttp = new XMLHttpRequest();
+          var url = 'http://' + headerMap['server'] + '/wifilist?time=' + new Date().getTime();
+          xhttp.open('GET', url, false);
+          xhttp.send(null);
+          
+          // Process response
+          if (xhttp.status == 200) {
+            // Separate csv in array
+            var responseList = xhttp.responseText.trim().split(/[\r\n]+/);
+
+            // Set header table
+            var wifiListHTML = "<table class='wifiscanlist'><tr><th>WIFI name (SSID)</th><th style=text-align:center>WIFI signal quality</th><th>Password?</th></tr>";
+            
+            for (var i = 0; i < responseList.length; i++) {
+              // Separate row in line array
+              var wifiRow = responseList[i].split(';');
+
+              // Process WIFI signal
+              var wifiSignal = wifiRow[1];
+              var wifiValue = 0;
+              if (wifiSignal < -90) {
+                wifiValue = 0;
+              } else if (wifiSignal < -85) {
+                wifiValue = 20;
+              } else if (wifiSignal < -75) {
+                wifiValue = 40;
+              } else if (wifiSignal < -65) {
+                wifiValue = 80;
+              } else if (wifiSignal < 0) {
+                wifiValue = 100;
+              }
+              
+              // Create response
+              wifiListHTML += "<tr>";
+              wifiListHTML += '<td class=wifiselect onclick="' + "addWifiForm('" + wifiRow[0] + "')" + '">' + wifiRow[0] + "</td>";
+              wifiListHTML += '<td><div class="wifi__signal"><div class="wifi__signal-inside wifi__signal-inside--' + wifiValue + '"></div></div>' + "</td>";
+              wifiListHTML += "<td>" + wifiRow[2] + "</td>";
+              wifiListHTML += "</tr>";
+            }
+
+            wifiListHTML += "<table>";
+
+            // Puts the response in the table, shows and hides elements
+            document.getElementById('loading-wifi-list').style.display = 'none';
+            document.getElementById('wifiscanlist').style.display = 'block';
+            document.getElementById('wifiscanlist').innerHTML = wifiListHTML;
+          }
+        }, 100);
+      }
+
+      // Timeout to hidde and show sections
+      function saveConfig () {
+        var wifissid = document.getElementById('ssid').value;
+        var wifipass = document.getElementById('pass').value;
+        var usercontrol = '';
+
+        for (var i=0; i < document.configurationform.usercontrol.length; i++) {
+          if (document.configurationform.usercontrol[i].checked) {
+              usercontrol = document.configurationform.usercontrol[i].value;
+          }
+        }
+
+        // Call to WIFI list endpoint
+        try {
+          var url = 'http://' + headerMap['server'] + '/control?command=saveconfig&ssid=' + btoa(wifissid) +'&password=' + btoa(wifipass) + '&usercontrol=' + usercontrol + '&time=' + new Date().getTime();
+          xhttp.open('GET', url, false); 
+          xhttp.send(null);
+          alert('WIFI saved!, Power off and back on the Remote WIFI car now! Wait about 10 seconds for it to restart. If a Wi-Fi network has been connected, check the new IP that your Wi-Fi hub has given you.');
+        } catch (e) {
+          alert('Update setting error, check that the car is turned on and connected to your device.');
+        }
+
+        // Show and hidde content
+        document.getElementById('configuration').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        isConfiguring = false;
+      }
+
+      function cancelConfig() {
+        document.getElementById('configuration').style.display = 'none';
+        document.getElementById('content').style.display = 'block';
+        isConfiguring = false;
+      }
+
+      // --------------------- Main car movements method --------------------- //
+      function controlCar(command) {
+        try {
+          var xhttp = new XMLHttpRequest();
+          var url = 'http://' + headerMap['server'] + '/control?command=car&value=' + command +'&time=' + new Date().getTime();
+          xhttp.open('GET', url, true);
+          xhttp.send(null);
+        } catch (e) {
+
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="actions">
+      <span>Actions:</span>
+      <button
+        onmousedown="controlCar('claxonon')"
+        onmouseup="controlCar('claxonoff')"
+        ontouchstart="controlCar('claxonon')"
+        ontouchend="controlCar('claxonoff')"
+      >
+        Claxon (space)
+      </button>
+
+      <button
+        onmousedown="controlCar('lighton')"
+      >
+        Ligth On (Q)
+      </button>
+      <button
+        onmousedown="controlCar('lightoff')"
+      >
+        Ligth Off (W)
+      </button>
+      <button type="button" onmousedown="showConfigOptions()">WIFI and Config</button>
+    </div>
+
+    <hr />
+
+    <div id="configuration" class="configuration hidden">
+      <form name="configurationform" onsubmit="return false;">
+        <div>
+          <div>
+            <h3>Available WIFI networks</h3>
+            <p>Click to add to your WIFI configuration text box.</p>
+            <div id="loading-wifi-list" class="loading-wifi-list hidden"><b>Loading...</b></div>
+            <div id="wifiscanlist" ></div>
+            <button type="button" class="wifiscan__button" onmousedown="wifiScan()">Scan WIFI networks</button>
+          </div>
+          <h3>Your WIFI Configuration</h3>
+          <div class="configuration__item">
+            <div class="configuration__tag">SSID:</div>
+            <input type="text" id="ssid" name="ssid">
+          </div>
+          <div class="configuration__item">
+            <div class="configuration__tag">Password:</div> 
+            <input type="password" id="pass" name="pass">
+          </div>
+        </div>
+        <hr />
+        <div>
+          <h3>Control:</h3>
+          <div class="configuration__item">
+            <div class="configuration__tag">Buttons text</div>
+            <input type="radio" id="buttonstext" name="usercontrol" value="buttonstext">
+          </div>
+
+          <div class="configuration__item">
+            <div class="configuration__tag">Buttons Icons</div>
+            <input type="radio" id="buttonsicons" name="usercontrol" value="buttonsicons">
+          </div>
+  
+          <div class="configuration__item">
+            <div class="configuration__tag">Joystick</div>
+            <input type="radio" id="joystick" name="usercontrol" value="joystick">
+          </div>
+        </div>
+        <hr />
+        <button type="button" class="config__button" onmousedown="saveConfig()">Save configuration</button>
+        <button type="button" class="config__button" onmousedown="cancelConfig()">Cancel</button>
+      </form>
+    </div>
+
+    <div id="content" class="content">
+      <div class="pad">
+        <div id="named-button-pad" class="named-button-pad hidden">
+          <div>
+            <button
+              id="forward"
+              class="named-button-pad__forward"
+              onmousedown="controlCar('forward')"
+              onmouseup="controlCar('stop')"
+              ontouchstart="controlCar('forward')"
+              ontouchend="controlCar('stop')"
+            ></button>
+          </div>
+          <div>
+            <button
+              id="turnleft"
+              class="named-button-pad__left"
+              onmousedown="controlCar('turnleft')"
+              onmouseup="controlCar('stop')"
+              ontouchstart="controlCar('turnleft')"
+              ontouchend="controlCar('stop')"
+            ></button>
+            <button
+              id="stop"
+              onmousedown="controlCar('stop')"
+              onmouseup="controlCar('stop')"
+              ontouchstart="controlCar('stop')"
+              ontouchend="controlCar('stop')"
+            ></button>
+            <button
+              id="turnright"
+              class="named-button-pad__right"
+              onmousedown="controlCar('turnright')"
+              onmouseup="controlCar('stop')"
+              ontouchstart="controlCar('turnright')"
+              ontouchend="controlCar('stop')"
+            ></button>
+          </div>
+          <div>
+            <button
+              id="backward"
+              class="named-button-pad__backward"
+              onmousedown="controlCar('backward')"
+              onmouseup="controlCar('stop')"
+              ontouchstart="controlCar('backward')"
+              ontouchend="controlCar('stop')"
+            ></button>
+          </div>
+        </div>
+
+        <div id="joystick-pad" class="joystick-pad hidden">
+          <div class="joystick__container">
+            <div id="wrapper"></div>
+          </div>
+        </div>
+      </div>
+      <div class="cam">
+        <img id="camerastream" class="camerastream">
+      </div>
+    </div>
+    <script language="JavaScript">
+      // Create a moving image for older browsers that don't support jpeg stream
+      function oldphotoframe() {
+        setTimeout(function() {
+          var time =  + new Date().getTime();
+          document.getElementById('camerastream').src='http://'+headerMap['server']+'/get_photo?random=' + time;
+          oldphotoframe();
+        }, 5000);
+      }
+
+      // Set the control that the user has defined in the configuration
+      if (headerMap['usercontrol'] == 'joystick') {
+        // For HTML 5 Joystick
+        document.getElementById('joystick').checked = true;
+        document.getElementById('joystick-pad').style.display = 'block';
+      } else if (headerMap['usercontrol'] == 'buttonsicons') {
+        // For buttons with arrow symbols
+        document.getElementById('forward').innerHTML = "&#8593;";
+        document.getElementById('turnleft').innerHTML = "&#8592;";
+        document.getElementById('stop').innerHTML = "&#9633;";
+        document.getElementById('turnright').innerHTML = "&#8594;";
+        document.getElementById('backward').innerHTML = "&#8595;";
+        document.getElementById('buttonsicons').checked = true;
+        document.getElementById('named-button-pad').style.display = 'block';
+      } else {
+        // For buttons with text named
+        document.getElementById('forward').innerHTML = "Forward";
+        document.getElementById('turnleft').innerHTML = "Turn Left";
+        document.getElementById('stop').innerHTML = "Stop";
+        document.getElementById('turnright').innerHTML = "Turn Right";
+        document.getElementById('backward').innerHTML = "Backward";
+        document.getElementById('buttonstext').checked = true;
+        document.getElementById('named-button-pad').style.display = 'block';
+      }
+      
+      // Put current data WIFI configuration section
+      document.getElementById('ssid').value = atob(headerMap['wifissid']);
+      document.getElementById('pass').value = atob(headerMap['wifipass']);
+      
+      // Define jpeg stream for modern browsers or dynamic photo change for old browsers
+      if (!window.opera && (/\bMSIE 7/.test(navigator.userAgent) || /\bMSIE 6/.test(navigator.userAgent) || /\bMSIE 5/.test(navigator.userAgent))) {
+        oldphotoframe();
+      } else {
+        document.getElementById('camerastream').src='http://'+headerMap['server']+':81/stream';
+      }
+    </script>
+    <script>
+      // HTML 5 Joystick Script
+      const joystick = createJoystick(document.getElementById('wrapper'));
+      var lastCommand = "";
+      var claxonOn = false;
+      var lightOn = false;
+
+      // Sense joystick axis and determine movement
+      function moveCar(x, y, stop) {
+        if (stop) {
+          command = 'stop';
+        } else if (x > 25) {
+          command = 'turnright';
+        } else if (x < -25) {
+          command = 'turnleft';
+        } else if (y > 25) {
+          command = 'backward';
+        } else if (y < -25) {
+          command = 'forward';
+        } else {
+          command = 'stop';
+        }
+
+        // Prevent repeated commands from being sent
+        if (command !== lastCommand) {
+          controlCar(command);
+          //console.log(command);
+        }
+
+        // Set flag with the last command
+        lastCommand = command;
+      }
+
+      // Main function to create Joystick element
+      function createJoystick(parent) {
+        const maxDiff = 40;
+        const stick = document.createElement('div');
+        stick.classList.add('joystick');
+
+        var dragStart = null;
+        var currentPos = { x: 0, y: 0 };
+
+        // Init joystick event
+        function handleMouseDown(event) {
+          stick.style.transition = '0s';
+          if (event.changedTouches) {
+            dragStart = {
+              x: event.changedTouches[0].clientX,
+              y: event.changedTouches[0].clientY,
+            };
+            return;
+          }
+          dragStart = {
+            x: event.clientX,
+            y: event.clientY,
+          };
+
+        }
+
+        // Add listeners for diferent HID
+        stick.addEventListener('mousedown', handleMouseDown, false);
+        document.addEventListener('mousemove', handleMouseMove, false);
+        document.addEventListener('mouseup', handleMouseUp, false);
+        stick.addEventListener('touchstart', handleMouseDown, false);
+        document.addEventListener('touchmove', handleMouseMove, false);
+        document.addEventListener('touchend', handleMouseUp, false);
+
+        
+
+        // User move Joystick event
+        function handleMouseMove(event) {
+          if (dragStart === null) return;
+          event.preventDefault();
+          if (event.changedTouches) {
+            event.clientX = event.changedTouches[0].clientX;
+            event.clientY = event.changedTouches[0].clientY;
+          }
+
+          // Calculate axis diferences
+          const xDiff = event.clientX - dragStart.x;
+          const yDiff = event.clientY - dragStart.y;
+          const angle = Math.atan2(yDiff, xDiff);
+          const distance = Math.min(maxDiff, Math.hypot(xDiff, yDiff));
+          const xNew = distance * Math.cos(angle);
+          const yNew = distance * Math.sin(angle);
+          // stick.style.transform = `translate3d(${xNew}px, ${yNew}px, 0px)`;
+          stick.style.transform = 'translate3d(' + xNew + 'px, ' + yNew + 'px, 0px)';
+          currentPos = { x: xNew, y: yNew };
+          
+          // Event execute function
+          moveCar(currentPos.x, currentPos.y, false);
+        }
+
+        // User release joystick event
+        function handleMouseUp(event) {
+          if (dragStart === null) return;
+          stick.style.transition = '.2s';
+          stick.style.transform = 'translate3d(0px, 0px, 0px)';
+          dragStart = null;
+
+          // Set center position
+          currentPos = { x: 0, y: 0 };
+          
+          // Event execute function
+          moveCar(currentPos.x, currentPos.y, true);
+        }
+
+        parent.appendChild(stick);
+        return {
+          getPosition: function () { return currentPos },
+        };
+      }
+
+      // Gamepad HID control Script
+      if (navigator.getGamepads) {
+        setInterval(function () {
+          const myGamepads = navigator.getGamepads();
+  
+          if (!!myGamepads && myGamepads.length > 0) {
+            const myGamepad = myGamepads[0]; // use the first gamepad
+  
+            if (myGamepad && myGamepad.axes && myGamepad.axes.length > 0 && myGamepad.buttons && myGamepad.buttons.length > 0) {
+              // Sense analog axis
+              if (myGamepad.axes[2] < -0.6) {
+                command = "turnleft";
+              } else if (myGamepad.axes[2] > 0.6) {
+                command = "turnright";
+              } else if (myGamepad.axes[1] < -0.6) {
+                command = "forward";
+              } else if (myGamepad.axes[1] > 0.6) {
+                command = "backward";
+              } else {
+                command = "stop";
+              }
+      
+              // Sense buttons
+              if (myGamepad.buttons[0].pressed) {
+                if (!claxonOn) {
+                  controlCar("claxonon");
+                }
+                claxonOn = true;
+              } else {
+                if (claxonOn) {
+                  controlCar("claxonoff");
+                }
+                claxonOn = false;
+              }
+      
+              if (myGamepad.buttons[1].pressed) {
+                if (lightOn) {
+                  controlCar("lightoff");
+                }
+                lightOn = false;
+              }
+      
+              if (myGamepad.buttons[3].pressed) {
+                if (!lightOn) {
+                  controlCar("lighton");
+                }
+                lightOn = true;
+              }
+              
+              if (command !== lastCommand) {
+                controlCar(command);
+                //console.log(command);
+              }
+      
+              lastCommand = command;
+            }
+          }
+        }, 1000 / 10) // check 10 times per second if the button one is pressed
+      }
+
+    </script>
+  </body>
+</html>
