@@ -1,6 +1,6 @@
 # ESP32-CAM-car-server
 
-Proyecto de vehiculo a control remoto mediante WIFI, si deide continuar con este proyecto obtendrá un entretenido prototipo de juguete que concentra varias ramas tecnológicas, entre ellas electricidad, electrónica, programación de microcontroladores, informática, telecomunicaciones y servicios de internet.
+Proyecto de vehiculo a control remoto mediante WIFI, si decide realizar este proyecto obtendrá un entretenido prototipo de juguete que concentra varias ramas tecnológicas, entre ellas electricidad, electrónica, programación de microcontroladores, informática, telecomunicaciones y servicios de internet.
 
 Este repositorio incluye el código fuente que se instalará en el microcontrolador, en mi caso he utilizado el microcontrolador ESP32-CAM, sin embargo puede utilizar otros modelos (idealmente placas compatibles con el IDE de Arduino) ya que la mayoría del código esta escrito en leguage C, en caso qe desee usar otra placa debe considerar los cambios necesarios en la programación para el correcto funcionamiento.
 
@@ -13,7 +13,7 @@ Ejemplo del resultado que podría obtener:
 
 Este es un entretenido proyecto para hacer usted mismo, con su familia o con amigos, aprenderá mucho sobre como funcionan tecnologías actuales, es increible como un proyecto tan pequeño lleva en su interior décadas de investigaciones y evolución tecnológica. El siguiente diagrama representa todo lo que digo:
 
-
+![alt Diagrama](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/Remote_WIFI_Car_main_diagram_es.jpg)
 
 ### Pre-requisitos 📋
 
@@ -34,8 +34,12 @@ Materiales:
 - Puente H doble (), en caso de no disponer de puente H, puede crearlo usted mismo mediante transistores de potencia o relés.
 - Micro controlador ESP32-CAM
 - Switch de encendido
-- Buzer activo, puede usar un buzer pasivo pero debe contemplar cambiar la salida digital GPIO 12 a PWM
+- Piezo Buzzer activo, puede usar un Piezo Buzzer pasivo pero debe contemplar cambiar la salida digital GPIO 12 a PWM, o tambien puede agregar un generador de pulsos mediante un circuito de carga y descarga o o bien un circuito LM555
 - Cables hembra para conexiones de pines (mínimo 20 cables)
+- 2 Baterias 18650 3.7v sobre 5000mAh
+- Porta baterias 18650
+- Cargador de baterias 18650
+- Antena WIFI 3dbi mínimo (opcional) el módulo ESP32-CAM incluye una antena, es débil pero puede servir de igual forma si no pretende alejarse del vehículo o del punto de acceso WIFI, en lo personal yo si recomiendo agregar la antena
 
 Computador
 
