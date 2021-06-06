@@ -97,6 +97,21 @@ Una vez encontrado instale la dependencia:
 
 ## Despliegue 📦
 
+Para desplegar el proyecto primero debe compilarlo para verificar que se instalará correctamente en el ESP32, para ello presione el botón "verificar"
+
+![alt Diagrama Buscar esp32](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/4_compile.png)
+
+Si la consola se muestra limpia tal como en la imagen anterior, ya puede cargar el programa en el micro-controlador, para ello debe conectar la UART del ESP32 a su computadora, la forma más comun es usar un adaptador USB a Serial.
+
+![alt Diagrama Buscar esp32](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/esp32_uart.png)
+
+Una vez conectado a el adaptador USB a Serial a su computadora debe configurar los parámetros de comunicación en el IDE de Arduino:
+
+![alt Diagrama Buscar esp32](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/5_arduino_configuracion.png
+
+Luego que configure la comunicaión entre el IDE y la UART del ESP32, ya puede subir el código a su micro-controlador, simplemente presione el boton "Subir Usando Programador" y también debe presionar el único botón que posee la placa ESP32, esto habilitará el modo de escritura.
+
+Una vez cargado el programa ya puede quitar el puente entre IO0 y GND. Y reiniciar el ESP32.
 
 
 ## Conectarse al Vehículo 🎮
