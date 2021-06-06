@@ -72,15 +72,34 @@ Una vez que abra el proyecto en el IDE de Arduino, verá tres archivos principal
 - app_httpd.cpp   Archivo del servidor web, este archivo es el encargado de levantar el sitio web, compartir en tiempo real la cámara y de recibir los comando http para controlar los movimientos del vehículo.
 - web_index.h   Archivo del sitio web HTML, este es una copia del archivo frontend.html, solo que se encuentra comprimido por gzip y declarado el binario dentro de un archivo de cabecera en exadecimal.
 
-#### 3) Agregar los datos de configuración
 
 
+#### 3) Agregar dependencia
 
+La dependencia de Espressif agrega compatibilidad del modulo ESP32 al IDE de Arduino, este software permite que el código fuente escrito en lenguaje C pueda ser compilado correctamente para el microcontrolador, si no instala esta dependencia no podrá cargar el programa dentro del hardware.
+
+Primero bara la configuración del IDE de Arduino y agregue el siguiente texto:
+
+https://dl.espressif.com/dl/package_esp32_index.json: con esta dirección el gestor de placas tendrá acceso a un conjunto elevado de placas y módulos ESP32 de varios fabricantes.
+https://resource.heltec.cn/download/package_heltec_esp32_index.json: con esta otra el gestor de placas tendrá acceso a las placas de desarrollo ESP32 comercializadas por Heltec:
+
+![alt Agregar dependencia](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/0_instalar_espressif.png)
+
+Luego de agregar la ruta, ahora debe dirigirse al gestor de tarjetas y buscar la dependencia ESP32:
+
+![alt Preferencias Arduino](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/1_preferencias.png)
+
+![alt Diagrama Gestor tarjetas](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/2_gestor_tarjetas.png)
+
+Una vez encontrado instale la dependencia:
+
+![alt Diagrama Buscar esp32](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/3_esp32.png)
 
 ## Despliegue 📦
 
 
-## Conectarse al Vehículo 📦
+
+## Conectarse al Vehículo 🎮
 
 El vehículo levantará una red WIFI abierta llamada "Remote WIFI Car"
 
