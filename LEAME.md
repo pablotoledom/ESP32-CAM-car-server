@@ -52,7 +52,7 @@ Computador
 
 El siguiente diagrama electrónico muestra las conexiones que debe realizar entre los difrentes componentes:
 
-![alt Diagrama Electrico](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/electric_main_diagram.jpg | width=100)
+<img alt="Diagrama Electrico" src="https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/electric_main_diagram.jpg" width="800px">
 
 ### Instalación del software 🔧
 
