@@ -4,7 +4,7 @@ Remote control vehicle project via WIFI, if you decide to carry out this project
 
 This repository includes the source code that will be installed in the microcontroller, in my case I have used the ESP32-CAM microcontroller, however you can use other models (ideally boards compatible with the Arduino IDE) since most of the code is written in leguage C, in case you want to use another board, you should consider the necessary changes in the programming for correct operation.
 
-[Click aquí para ver el archivo léame en español](https://github.com/pablotoledom/ESP32-CAM-car-server/blob/main/README.md)
+[Click aquí para ver el archivo léame en español](https://github.com/pablotoledom/ESP32-CAM-car-server/blob/main/LEAME.md)
 
 ## Starting 🚀
 
