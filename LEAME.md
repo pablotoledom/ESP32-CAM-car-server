@@ -1,8 +1,8 @@
 # ESP32-CAM-car-server
 
-Proyecto de vehiculo a control remoto mediante WIFI, si decide realizar este proyecto obtendrá un entretenido prototipo de juguete que concentra varias ramas tecnológicas, entre ellas electricidad, electrónica, programación de microcontroladores, informática, telecomunicaciones y servicios de internet.
+Proyecto de vehículo a control remoto mediante WIFI, si decide realizar este proyecto obtendrá un entretenido prototipo de juguete que concentra varias ramas tecnológicas, entre ellas electricidad, electrónica, programación de micro-controladores, informática, telecomunicaciones y servicios de internet.
 
-Este repositorio incluye el código fuente que se instalará en el microcontrolador, en mi caso he utilizado el microcontrolador ESP32-CAM, sin embargo puede utilizar otros modelos (idealmente placas compatibles con el IDE de Arduino) ya que la mayoría del código esta escrito en leguage C, en caso qe desee usar otra placa debe considerar los cambios necesarios en la programación para el correcto funcionamiento.
+Este repositorio incluye el código fuente que se instalará en el micro-controlador, en mi caso he utilizado el micro-controlador ESP32-CAM, sin embargo puede utilizar otros modelos (idealmente placas compatibles con el IDE de Arduino) ya que la mayoría del código esta escrito en leguaje C, en caso que desee usar otra placa debe considerar los cambios necesarios en la programación para el correcto funcionamiento.
 
 [Click here for english readme](https://github.com/pablotoledom/ESP32-CAM-car-server/blob/main/README.md)
 
@@ -10,9 +10,9 @@ Este repositorio incluye el código fuente que se instalará en el microcontrola
 
 Ejemplo del resultado que podría obtener:
 
-[![Alt text](https://img.youtube.com/vi/configuroweb/0.jpg)](https://www.youtube.com/watch?v=configuroweb)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/02oBJucxMBU/0.jpg)](https://www.youtube.com/watch?v=02oBJucxMBU)
 
-Este es un entretenido proyecto para hacer usted mismo, con su familia o con amigos, aprenderá mucho sobre como funcionan tecnologías actuales, es increible como un proyecto tan pequeño lleva en su interior décadas de investigaciones y evolución tecnológica. El siguiente diagrama representa todo lo que digo:
+Este es un entretenido proyecto para hacer usted mismo, con su familia o con amigos, aprenderá mucho sobre como funcionan tecnologías actuales, es increíble como un proyecto tan pequeño lleva en su interior décadas de investigaciones y evolución tecnológica. El siguiente diagrama representa todo lo que digo:
 
 ![alt Diagrama](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/Remote_WIFI_Car_main_diagram_es.jpg)
 
@@ -31,11 +31,11 @@ Considere contar con las siguientes herramientas:
 
 Materiales:
 
-- Kit de vehiculo de dos motores (o pueden ser 4), en caso de no disponer del kit, puede armarlo usted mismo usando motores DC de 5v y agregando ruedas que le acomoden.
+- Kit de vehículo de dos motores (o pueden ser 4), en caso de no disponer del kit, puede armarlo usted mismo usando motores DC de 5v y agregando ruedas que le acomoden.
 - Puente H doble (), en caso de no disponer de puente H, puede crearlo usted mismo mediante transistores de potencia o relés.
 - Micro controlador ESP32-CAM
 - Switch de encendido
-- Piezo Buzzer activo, puede usar un Piezo Buzzer pasivo pero debe contemplar cambiar la salida digital GPIO 12 a PWM, o tambien puede agregar un generador de pulsos mediante un circuito de carga y descarga o o bien un circuito LM555
+- Piezo Buzzer activo, puede usar un Piezo Buzzer pasivo pero debe contemplar cambiar la salida digital GPIO 12 a PWM, o también puede agregar un generador de pulsos mediante un circuito de carga y descarga o o bien un circuito LM555
 - Cables hembra para conexiones de pines (mínimo 20 cables)
 - 2 Baterias 18650 3.7v sobre 5000mAh
 - Porta baterias 18650
@@ -70,16 +70,16 @@ git clone https://github.com/pablotoledom/ESP32-CAM-car-server.git
 
 Una vez que abra el proyecto en el IDE de Arduino, verá tres archivos principales:
 
-- ESP32-CAM-car-server.ino   Archivo principal del proyecto, incluye los métodos que inicializan al microcontrolador y manejan el hardware WIFI.
+- ESP32-CAM-car-server.ino   Archivo principal del proyecto, incluye los métodos que inicializa el micro-ontrolador y manejan el hardware WIFI.
 - app_httpd.cpp   Archivo del servidor web, este archivo es el encargado de levantar el sitio web, compartir en tiempo real la cámara y de recibir los comando http para controlar los movimientos del vehículo.
-- web_index.h   Archivo del sitio web HTML, este es una copia del archivo frontend.html, solo que se encuentra comprimido por gzip y declarado el binario dentro de un archivo de cabecera en exadecimal.
+- web_index.h   Archivo del sitio web HTML, este es una copia del archivo frontend.html, solo que se encuentra comprimido por gzip y declarado el binario dentro de un archivo de cabecera en hexadecimal.
 
 
 #### 3) Agregar dependencia
 
 La dependencia de Espressif agrega compatibilidad del modulo ESP32 al IDE de Arduino, este software permite que el código fuente escrito en lenguaje C pueda ser compilado correctamente para el microcontrolador, si no instala esta dependencia no podrá cargar el programa dentro del hardware.
 
-Primero bara la configuración del IDE de Arduino y agregue el siguiente texto:
+Primero vaya a la configuración del IDE de Arduino y agregue el siguiente texto:
 
 https://dl.espressif.com/dl/package_esp32_index.json: con esta dirección el gestor de placas tendrá acceso a un conjunto elevado de placas y módulos ESP32 de varios fabricantes.
 https://resource.heltec.cn/download/package_heltec_esp32_index.json: con esta otra el gestor de placas tendrá acceso a las placas de desarrollo ESP32 comercializadas por Heltec:
@@ -103,7 +103,7 @@ Para desplegar el proyecto primero debe compilarlo para verificar que se instala
 
 <img alt="Compilar" src="https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/4_compile.png" width="600px">
 
-Si la consola se muestra limpia tal como en la imagen anterior, ya puede cargar el programa en el micro-controlador, para ello debe conectar la UART del ESP32 a su computadora, recuerde agregar el puente entre IO0 y GND tal como se muestra en la siguiente imagen, la forma más comun es usar un adaptador USB a Serial.
+Si la consola se muestra limpia tal como en la imagen anterior, ya puede cargar el programa en el micro-controlador, para ello debe conectar la UART del ESP32 a su computadora, recuerde agregar el puente entre IO0 y GND tal como se muestra en la siguiente imagen, la forma más común es usar un adaptador USB a Serial.
 
 <img alt="ESP32-CAM UART" src="https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/esp32_uart.png" width="500px">
 
@@ -112,7 +112,7 @@ Una vez conectado a el adaptador USB a Serial a su computadora debe configurar l
 
 <img alt="Configuracion Arduino IDE" src="https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/5_arduino_configuracion.png" width="600px">
 
-Luego que configure la comunicaión entre el IDE y la UART del ESP32-CAM, ya puede subir el código a su micro-controlador, simplemente presione el boton "Subir Usando Programador" y también debe presionar el único botón que posee la placa ESP32-CAM, esto habilitará el modo de escritura.
+Luego que configure la comunicación entre el IDE y la UART del ESP32-CAM, ya puede subir el código a su micro-controlador, simplemente presione el botón "Subir Usando Programador" y también debe presionar el único botón que posee la placa ESP32-CAM, esto habilitará el modo de escritura.
 
 Una vez cargado el programa ya puede quitar el puente entre IO0 y GND. Y reiniciar el ESP32-CAM.
 
@@ -127,13 +127,13 @@ Una vez que se conecte a dicha red, deberá ingresar a la siguiente dirección I
 
 ![alt Ingresar IP](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/7_enter_ip.png)
 
-Una vez dentro del sitio web del vehículo, podra controlarlo directamente desde aqui, o también podrá vincularlo a una red WIFI. En caso de conectarlo a una red WIFI, considere que deberá localizar manualmente la IP que le ha sido asignada (ya sea ingresando al router o usando comandos de red) para poder controlar el vehículo.
+Una vez dentro del sitio web del vehículo, podrá controlarlo directamente desde aqui, o también podrá vincularlo a una red WIFI. En caso de conectarlo a una red WIFI, considere que deberá localizar manualmente la IP que le ha sido asignada (ya sea ingresando al router o usando comandos de red) para poder controlar el vehículo.
 
 El sitio web de control incluye un administrador de WIFI donde podrá ver las redes detectadas por el ESP32-CAM y la calidad de señal respectiva, simplemente escanee y seleccione su red, agregue la contraseña de ser necesario.
 
 ![alt Configurar WIFI](https://raw.githubusercontent.com/pablotoledom/ESP32-CAM-car-server/main/images/8_configure_wifi.png)
 
-También podrá cambiar los botones de mando, por joystick, pruebe cual se le acomoda más a su gusto, solo recuerde que debe reiniciar el micro-controlador luego de cambiar la configuración, ya sea apagandolo o presionando el único boton que posee.
+También podrá cambiar los botones de mando, por joystick, pruebe cual se le acomoda más a su gusto, solo recuerde que debe reiniciar el micro-controlador luego de cambiar la configuración, ya sea apagándolo o presionando el único botón que posee.
 
 ## Autor
 

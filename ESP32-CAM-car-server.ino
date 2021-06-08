@@ -146,7 +146,7 @@ void setup() {
   digitalWrite(gpLed, LOW);     // Light
   digitalWrite(gpClaxon, LOW);  // Claxon
 
-  // Initialise the camera
+  // Initialize the camera
   camera_config_t config;
   config.ledc_channel = LEDC_CHANNEL_0;
   config.ledc_timer = LEDC_TIMER_0;

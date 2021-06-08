@@ -39,8 +39,6 @@ extern int gpClaxon; // Claxon
 // Network IP
 extern String WiFiAddr;
 
-//void WheelAct(int nLf, int nLb, int nRf, int nRb);
-
 // Camera stream declarations
 typedef struct {
         size_t size; //number of values used for filtering
