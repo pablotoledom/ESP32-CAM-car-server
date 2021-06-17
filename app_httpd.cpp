@@ -404,7 +404,8 @@ static esp_err_t cmd_handler(httpd_req_t *req){
   }
 
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-  return httpd_resp_send(req, NULL, 0);
+  httpd_resp_set_type(req, "text/html");
+  return httpd_resp_send(req, "OK", 2);
 }
 
 // Asyncrhonous method to capture photo from cam and save into SPIFFS

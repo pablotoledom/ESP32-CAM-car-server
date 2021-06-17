@@ -740,8 +740,13 @@
       }
       
       // Put current data WIFI configuration section
-      document.getElementById('ssid').value = atob(headerMap['wifissid']);
-      document.getElementById('pass').value = atob(headerMap['wifipass']);
+      if (headerMap['wifissid']) {
+        document.getElementById('ssid').value = atob(headerMap['wifissid']);
+      }
+
+      if (headerMap['wifipass']) {
+        document.getElementById('pass').value = atob(headerMap['wifipass']);
+      }
       
       // Define jpeg stream for modern browsers or dynamic photo change for old browsers
       if (!window.opera && (/\bMSIE 7/.test(navigator.userAgent) || /\bMSIE 6/.test(navigator.userAgent) || /\bMSIE 5/.test(navigator.userAgent))) {
