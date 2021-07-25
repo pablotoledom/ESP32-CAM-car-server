@@ -404,15 +404,17 @@ static esp_err_t cmd_handler(httpd_req_t *req){
   }
 
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-  httpd_resp_set_type(req, "text/html");
-  return httpd_resp_send(req, "OK", 2);
+  httpd_resp_set_type(req, "application/json");
+  String result = "{\"result\": \"OK\"}";
+  return httpd_resp_send(req, &result[0], strlen(&result[0]));
 }
 
 // Asyncrhonous method to capture photo from cam and save into SPIFFS
 static esp_err_t takephoto_handler(httpd_req_t *req){
   capturePhotoSaveSpiffs();
-  httpd_resp_set_type(req, "text/html");
-  return httpd_resp_send(req, "OK", 2);
+  httpd_resp_set_type(req, "application/json");
+  String result = "{\"result\": \"OK\"}";
+  return httpd_resp_send(req, &result[0], strlen(&result[0]));
 }
 
 // Asyncrhonous method to capture photo from cam return into website call
@@ -451,7 +453,7 @@ static esp_err_t getphoto_handler(httpd_req_t *req){
 static esp_err_t wifilist_handler(httpd_req_t *req){
   Serial.println("scan start");
 
-  String wifi_list_csv_resp = "";
+  String wifi_list_csv_resp = "{\"result\":[";
 
   // WiFi.scanNetworks will return the number of networks found
   int n = WiFi.scanNetworks();
@@ -470,13 +472,18 @@ static esp_err_t wifilist_handler(httpd_req_t *req){
           Serial.print(WiFi.RSSI(i));
           Serial.print(")");
           Serial.println((WiFi.encryptionType(i) == WIFI_AUTH_OPEN)?" ":"*");
-          wifi_list_csv_resp += WiFi.SSID(i) + ";" + WiFi.RSSI(i) + ";" + ((WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? "OPEN" : "NEED-PASS") + "\r\n";
+          wifi_list_csv_resp += "{\"ssid\":\"" + WiFi.SSID(i)
+            + "\", \"signal\":\"" + WiFi.RSSI(i)
+            + "\", \"security\": \"" + ((WiFi.encryptionType(i) == WIFI_AUTH_OPEN) ? "OPEN" : "NEED-PASS")
+            + ((i == (n - 1)) ? "\"}" : "\"}, ");
           delay(10);
       }
   }
+
+  wifi_list_csv_resp += "]}";
  
   httpd_resp_set_hdr(req, "Access-Control-Allow-Origin", "*");
-  httpd_resp_set_type(req, "text/html");
+  httpd_resp_set_type(req, "application/json");
   return httpd_resp_send(req, &wifi_list_csv_resp[0], strlen(&wifi_list_csv_resp[0]));
 }
 
