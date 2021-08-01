@@ -142,4 +142,4 @@ Pablo Toledo
 
 ## Licencia 📄
 
-Este proyecto está bajo la Licencia Apache, Versión 2.0 - mira el archivo [LICENCIA.md](LICENSE.md) para detalles.
+Este proyecto está bajo la Licencia Apache, Versión 2.0 - mira el archivo [LICENCIA](LICENCIA) para detalles.
