@@ -213,8 +213,8 @@
             catch (e) {} 
           try { return new ActiveXObject("Microsoft.XMLHTTP"); } 
             catch (e) {} 
-          //Microsoft.XMLHTTP points to Msxml2.XMLHTTP and is redundant 
-          throw new Error("This browser does not support XMLHttpRequest."); 
+          //Microsoft.XMLHTTP points to Msxml2.XMLHTTP and is redundant
+          throw new Error("This browser does not support XMLHttpRequest.");
       };
 
       // Base64 Polyfill
@@ -375,6 +375,11 @@
         headerMap[header] = value;
       }
 
+      // Status vars
+      var lastCommand = "";
+      var claxonOn = false;
+      var lightOn = false;
+
       // ------------------ If do you need run local test mock ------------------ //
       // Mock headers for local testing
       // var headerMap = {
@@ -407,10 +412,10 @@
           if (!isConfiguring) {
             switch (event.keyCode) {
               case 81:
-                controlCar('lighton');
+                controlLight();
                 break;
               case 87:
-                controlCar('lightoff');
+                showConfigOptions();
                 break;
               case 32:
                 controlCar('claxonon');
@@ -480,6 +485,7 @@
       function showConfigOptions () {
         // Enable and disable user sections
         document.getElementById('content').style.display = 'none';
+        document.getElementById('credits').style.display = 'none';
         document.getElementById('configuration').style.display = 'block';
         // Set flag for disable car movements when user edit configuration
         isConfiguring = true;
@@ -582,6 +588,7 @@
 
       function cancelConfig() {
         document.getElementById('configuration').style.display = 'none';
+        document.getElementById('credits').style.display = 'none';
         document.getElementById('content').style.display = 'block';
         isConfiguring = false;
       }
@@ -597,12 +604,37 @@
 
         }
       }
+
+      // ---------------------- Light ON / OFF method ---------------------- //
+      function controlLight() {
+        if(lightOn) {
+          document.getElementById('light').innerHTML = "Light On (Q)";
+          lightOn = false;
+          controlCar('lightoff');
+        } else {
+          document.getElementById('light').innerHTML = "Light OFF (Q)";
+          lightOn = true;
+          controlCar('lighton');
+        }
+      }
+
+      // ---------------------- Show credits ---------------------- //
+      // Show configuration panel and hidde car control an camera
+      function showCredits () {
+        // Enable and disable user sections
+        document.getElementById('content').style.display = 'none';
+        document.getElementById('configuration').style.display = 'none';
+        document.getElementById('credits').style.display = 'block';
+        // Set flag for disable car movements when user edit configuration
+        isConfiguring = true;
+      }
     </script>
   </head>
   <body>
     <div class="actions">
       <span>Actions:</span>
       <button
+        id="claxon"
         onmousedown="controlCar('claxonon')"
         onmouseup="controlCar('claxonoff')"
         ontouchstart="controlCar('claxonon')"
@@ -612,16 +644,25 @@
       </button>
 
       <button
-        onmousedown="controlCar('lighton')"
+        id="light"
+        onmousedown="controlLight()"
       >
-        Ligth On (Q)
+        Light On (Q)
       </button>
       <button
-        onmousedown="controlCar('lightoff')"
+        id="config"
+        type="button"
+        onmousedown="showConfigOptions()"
       >
-        Ligth Off (W)
+        WIFI and Config (W)
       </button>
-      <button type="button" onmousedown="showConfigOptions()">WIFI and Config</button>
+      <button
+        id="config"
+        type="button"
+        onmousedown="showCredits()"
+      >
+        Credits
+      </button>
     </div>
 
     <hr />
@@ -667,6 +708,16 @@
         <hr />
         <button type="button" class="config__button" onmousedown="saveConfig()">Save configuration</button>
         <button type="button" class="config__button" onmousedown="cancelConfig()">Cancel</button>
+      </form>
+    </div>
+
+    <div id="credits" class="credits hidden">
+      <h2>Credits</h2>
+      <p>This project allows you to learn many technological disciplines (Electronics, Computer Science, Robotics, Internet Services), it is an excellent starting point to enter this world.</p>
+      <p>This application has been developed with a lot of love, it is part of a project built as a family and I invite you to learn.</p>
+      <p><b>Pablo Toledo</b></p>
+      <form name="creditsform" onsubmit="return false;">
+        <button type="button" class="config__button" onmousedown="cancelConfig()">Close</button>
       </form>
     </div>
 
@@ -784,9 +835,6 @@
     <script>
       // HTML 5 Joystick Script
       const joystick = createJoystick(document.getElementById('wrapper'));
-      var lastCommand = "";
-      var claxonOn = false;
-      var lightOn = false;
 
       // Sense joystick axis and determine movement
       function moveCar(x, y, stop) {
@@ -896,6 +944,7 @@
 
       // Gamepad HID control Script
       if (navigator.getGamepads) {
+        var lightPresed = false;
         setInterval(function () {
           const myGamepads = navigator.getGamepads();
   
@@ -904,13 +953,13 @@
   
             if (myGamepad && myGamepad.axes && myGamepad.axes.length > 0 && myGamepad.buttons && myGamepad.buttons.length > 0) {
               // Sense analog axis
-              if (myGamepad.axes[2] < -0.6) {
+              if (myGamepad.axes[0] < -0.6) {
                 command = "turnleft";
-              } else if (myGamepad.axes[2] > 0.6) {
+              } else if (myGamepad.axes[0] > 0.6) {
                 command = "turnright";
-              } else if (myGamepad.axes[1] < -0.6) {
+              } else if (myGamepad.axes[1] < -0.6 || myGamepad.buttons[7].pressed || myGamepad.buttons[9].pressed) {
                 command = "forward";
-              } else if (myGamepad.axes[1] > 0.6) {
+              } else if (myGamepad.axes[1] > 0.6 || myGamepad.buttons[6].pressed || myGamepad.buttons[8].pressed) {
                 command = "backward";
               } else {
                 command = "stop";
@@ -929,18 +978,17 @@
                 claxonOn = false;
               }
       
-              if (myGamepad.buttons[1].pressed) {
-                if (lightOn) {
-                  controlCar("lightoff");
+              if (myGamepad.buttons[3].pressed) {
+                if (!lightPresed) {
+                  controlLight();
                 }
-                lightOn = false;
+                lightPresed = true;
+              } else {
+                lightPresed = false;
               }
       
-              if (myGamepad.buttons[3].pressed) {
-                if (!lightOn) {
-                  controlCar("lighton");
-                }
-                lightOn = true;
+              if (myGamepad.buttons[11].pressed) {
+                showConfigOptions();
               }
               
               if (command !== lastCommand) {
